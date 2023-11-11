@@ -32,17 +32,16 @@ function addExpense() {
 function updateSalary() {
     const salary = document.getElementById('salaryInput').value;
 
-    if (!salary) {
-        alert('Please enter your monthly salary.');
-        
-    }
-
+    const remainingMoney = salary - totalExpenses;
+    document.getElementById('remainingAmount').textContent = remainingMoney.toFixed(2);
     // You can add additional logic here, such as updating a budget based on salary.
 
     // Clear input field
-    document.getElementById('salaryInput').value = '';
+
 }
 document.getElementById('salaryInput').addEventListener("input",updateSalary)
+
+
 function setCookie(cname,cvalue,exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
