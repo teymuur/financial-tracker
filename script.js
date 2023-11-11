@@ -1,3 +1,4 @@
+let totalExpenses = 0;
 function addExpense() {
     const category = document.getElementById('category').value;
     const amount = document.getElementById('amount').value;
@@ -19,7 +20,8 @@ function addExpense() {
     cell2.innerHTML = `$${amount}`;
     cell3.innerHTML = date;
 
-    // You can add additional logic here, such as updating a total or checking against a budget.
+    totalExpenses += parseFloat(amount);
+    document.getElementById('totalAmount').textContent = totalExpenses.toFixed(2);
 
     // Clear input fields
     document.getElementById('category').value = '';
@@ -27,6 +29,20 @@ function addExpense() {
     document.getElementById('date').value = '';
 }
 
+function updateSalary() {
+    const salary = document.getElementById('salaryInput').value;
+
+    if (!salary) {
+        alert('Please enter your monthly salary.');
+        
+    }
+
+    // You can add additional logic here, such as updating a budget based on salary.
+
+    // Clear input field
+    document.getElementById('salaryInput').value = '';
+}
+document.getElementById('salaryInput').addEventListener("input",updateSalary)
 function setCookie(cname,cvalue,exdays) {
     const d = new Date();
     d.setTime(d.getTime() + (exdays*24*60*60*1000));
