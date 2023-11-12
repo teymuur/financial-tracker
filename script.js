@@ -1,6 +1,6 @@
 let totalExpenses = parseFloat(getCookie('totalExpenses')) || 0;
 let salary = parseFloat(getCookie('salary')) || 0;
-
+document.getElementById('salaryInput').value = salary;
 function addExpense() {
     const category = document.getElementById('category').value;
     const amount = document.getElementById('amount').value;
