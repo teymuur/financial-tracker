@@ -57,8 +57,10 @@ function renderExpenseHistory() {
     // Clear previous rows
     expenseTable.innerHTML = '';
 
-    // Render new rows
+    // Update total expenses and render new rows
+    totalExpenses = 0;
     expenses.forEach(expense => {
+        totalExpenses += parseFloat(expense.amount);
         const newRow = expenseTable.insertRow(-1);
         const cell1 = newRow.insertCell(0);
         const cell2 = newRow.insertCell(1);
@@ -68,6 +70,9 @@ function renderExpenseHistory() {
         cell2.innerHTML = `$${expense.amount}`;
         cell3.innerHTML = expense.date;
     });
+
+    // Update total expenses display
+    document.getElementById('totalAmount').textContent = totalExpenses.toFixed(2);
 }
 
 
@@ -96,3 +101,5 @@ function setCookie(cname,cvalue) {
     }
     return "";
   }
+  renderExpenseHistory();
+  updateRemainingMoney()
