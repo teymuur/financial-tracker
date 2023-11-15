@@ -1,17 +1,33 @@
 let totalExpenses = parseFloat(getCookie('totalExpenses')) || 0;
 let salary = parseFloat(getCookie('salary')) || 0;
 document.getElementById('salaryInput').value = salary;
-
+const d = document.getElementById("date");
 
 //Max value for date is today
-let today = new Date();
-document.getElementById("date").setAttribute("max",`${today.getFullYear}-${today.getMonth}-${today.getDay}`);
-document.getElementById("date").value = `${today.getFullYear}-${today.getMonth}-${today.getDay}`;
+
+var today = new Date();
+var dd = today.getDate();
+var mm = today.getMonth() + 1; //January is 0!
+var yyyy = today.getFullYear();
+
+if (dd < 10) {
+   dd = '0' + dd;
+}
+
+if (mm < 10) {
+   mm = '0' + mm;
+} 
+today = yyyy + '-' + mm + '-' + dd;
+    d.setAttribute("max",today);
+    d.setAttribute('min',`2000-01-01`)
+
 function addExpense() {
     const category = document.getElementById('category').value;
     const amount = document.getElementById('amount').value;
-    const date = document.getElementById('date').value;
-
+    var date = document.getElementById('date').value;
+    if(date.split('-')[0] < 2000){
+      date = "2000-01-01"
+    }
     if (!category || !amount || !date) {
         alert('Please fill in all fields.');
         return;
