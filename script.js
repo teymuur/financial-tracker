@@ -149,5 +149,50 @@ function setCookie(cname,cvalue) {
     }
     return "";
   }
+  document.getElementById('fileInput').addEventListener('change', function(event) {
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+
+    if (file) {
+      readFile(file);
+    }
+  });
+
+  function readFile(file) {
+    const reader = new FileReader();
+
+    reader.onload = function(e) {
+      const fileContent = e.target.result;
+      setCookie("expenseData",fileContent);
+      renderExpenseHistory();
+      updateRemainingMoney();
+    };
+
+    reader.readAsText(file);
+  }
+  function saveToFile() {
+    const content = getCookie("expenseData");
+
+    // Create a Blob with the content
+    const blob = new Blob([content], { type: 'text/plain' });
+
+    // Create a link element
+    const link = document.createElement('a');
+
+    // Set the download attribute with the desired file name
+    link.download = 'records.json';
+
+    // Create a URL for the Blob and set it as the link's href
+    link.href = window.URL.createObjectURL(blob);
+
+    // Append the link to the document
+    document.body.appendChild(link);
+
+    // Trigger a click on the link to start the download
+    link.click();
+
+    // Remove the link from the document
+    document.body.removeChild(link);
+  }
   renderExpenseHistory();
   updateRemainingMoney();

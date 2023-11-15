@@ -67,3 +67,23 @@ th, td {
     padding: 4px;
     border-radius: 10px 0 0 10px ;
 }
+input[type="file"] {
+    display: none;
+  }
+
+  /* Style the button to resemble the file input */
+  .custom-file-input {
+    display: inline-block;
+    padding: 10px 15px;
+ 
+    cursor: pointer;
+    background-color: #4CAF50;
+    color: #fff;
+    border: none;
+    border-radius: 5px;
+  }
+
+  /* Style the button to change appearance on hover */
+  button:hover {
+    background-color: #45a049;
+  }

@@ -54,6 +54,10 @@
         <div id="totalExpense">
         <p>Total Expenses: $<span id="totalAmount">0</span></p> <p>Remaining Money: $<span id="remainingAmount">0.00</span></p>
     </div>
+    <button id="export" onclick="saveToFile()">Export all records</button>  <label for="fileInput" class="custom-file-input">Import File</label>
+  <!-- The actual file input is hidden -->
+  <input type="file" id="fileInput" />
+  
 </div>
 
 <script src="script.js">
