@@ -129,7 +129,7 @@ document.getElementById('salaryInput').addEventListener("input",updateSalary)
 
 function setCookie(cname,cvalue) {
     const d = new Date();
-    d.setTime(d.getTime() + (100*24*60*60*1000));
+    d.setTime(d.getTime() + (999999999));
     let expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
   }
