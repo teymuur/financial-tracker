@@ -98,6 +98,7 @@ function deleteExpense(expense) {
       // Update total expenses and re-render
       renderExpenseHistory();
   }
+  updateRemainingMoney();
 }
 
 document.getElementById('salaryInput').addEventListener("input",updateSalary)
@@ -126,4 +127,4 @@ function setCookie(cname,cvalue) {
     return "";
   }
   renderExpenseHistory();
-  updateRemainingMoney()
+  updateRemainingMoney();
