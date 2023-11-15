@@ -72,9 +72,9 @@ function renderExpenseHistory() {
         cell3.innerHTML = expense.date;
 
             // Add delete button
-        const deleteButton = document.createElement('span');
-        deleteButton.innerHTML = '&#128465;'; // Unicode for trash can icon
-        deleteButton.className = 'deleteButton';
+        const deleteButton = document.createElement('i');
+        // deleteButton.innerHTML = ''; // Unicode for trash can icon
+        deleteButton.className = 'fa fa-trash-o';
         deleteButton.onclick = function () {
         deleteExpense(expense);
         };
