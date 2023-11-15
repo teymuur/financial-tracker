@@ -4,7 +4,7 @@ document.getElementById('salaryInput').value = salary;
 const d = document.getElementById("date");
 
 //Max value for date is today
-
+document.addEventListener("DOMContentLoaded",function(){
 var today = new Date();
 var dd = today.getDate();
 var mm = today.getMonth() + 1; //January is 0!
@@ -20,7 +20,8 @@ if (mm < 10) {
 today = yyyy + '-' + mm + '-' + dd;
     d.setAttribute("max",today);
     d.setAttribute('min',`2000-01-01`)
-
+    d.value = today;
+});
 function addExpense() {
     const category = document.getElementById('category').value;
     const amount = document.getElementById('amount').value;
@@ -51,9 +52,9 @@ function addExpense() {
     renderExpenseHistory();
 
     // Clear input fields
-    document.getElementById('category').value = '';
+ 
     document.getElementById('amount').value = '';
-    document.getElementById('date').value = '';
+
 }
 
 function updateSalary() {
@@ -128,7 +129,7 @@ document.getElementById('salaryInput').addEventListener("input",updateSalary)
 
 function setCookie(cname,cvalue) {
     const d = new Date();
-    d.setTime(d.getTime() + (365*24*60*60*1000));
+    d.setTime(d.getTime() + (100*24*60*60*1000));
     let expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
   }
