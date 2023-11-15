@@ -1,6 +1,12 @@
 let totalExpenses = parseFloat(getCookie('totalExpenses')) || 0;
 let salary = parseFloat(getCookie('salary')) || 0;
 document.getElementById('salaryInput').value = salary;
+
+
+//Max value for date is today
+let today = new Date();
+document.getElementById("date").setAttribute("max",`${today.getFullYear}-${today.getMonth}-${today.getDay}`);
+document.getElementById("date").value = `${today.getFullYear}-${today.getMonth}-${today.getDay}`;
 function addExpense() {
     const category = document.getElementById('category').value;
     const amount = document.getElementById('amount').value;
@@ -73,7 +79,7 @@ function renderExpenseHistory() {
 
             // Add delete button
         const deleteButton = document.createElement('i');
-        // deleteButton.innerHTML = ''; // Unicode for trash can icon
+
         deleteButton.className = 'fa fa-trash-o';
         deleteButton.onclick = function () {
         deleteExpense(expense);
