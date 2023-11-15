@@ -65,16 +65,40 @@ function renderExpenseHistory() {
         const cell1 = newRow.insertCell(0);
         const cell2 = newRow.insertCell(1);
         const cell3 = newRow.insertCell(2);
+        const cell4 = newRow.insertCell(3);
 
         cell1.innerHTML = expense.category;
         cell2.innerHTML = `$${expense.amount}`;
         cell3.innerHTML = expense.date;
+
+            // Add delete button
+        const deleteButton = document.createElement('span');
+        deleteButton.innerHTML = '&#128465;'; // Unicode for trash can icon
+        deleteButton.className = 'deleteButton';
+        deleteButton.onclick = function () {
+        deleteExpense(expense);
+        };
+
+            cell4.appendChild(deleteButton);
     });
 
     // Update total expenses display
     document.getElementById('totalAmount').textContent = totalExpenses.toFixed(2);
 }
+function deleteExpense(expense) {
+  const expenseData = getCookie('expenseData') || '[]';
+  const expenses = JSON.parse(expenseData);
 
+  // Find and remove the expense
+  const index = expenses.findIndex(e => e.category === expense.category && e.amount === expense.amount && e.date === expense.date);
+  if (index !== -1) {
+      expenses.splice(index, 1);
+      setCookie('expenseData', JSON.stringify(expenses));
+
+      // Update total expenses and re-render
+      renderExpenseHistory();
+  }
+}
 
 document.getElementById('salaryInput').addEventListener("input",updateSalary)
 

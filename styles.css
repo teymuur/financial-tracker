@@ -63,3 +63,7 @@ th, td {
     color: #fff;
     padding: 10px;
 }
+.deleteButton {
+    cursor: pointer;
+    color: #ff0000;
+}
