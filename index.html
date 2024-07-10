@@ -6,16 +6,17 @@
     <title>Financial Tracker</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
 <div id="app">
     <h1>Financial Tracker</h1>
     <form id="expenseForm">
-         <div id="salary">
-        <label for="salaryInput">Monthly Salary:</label>
-        <input type="number" id="salaryInput" name="salaryInput" placeholder="$" required>
-    </div>
+        <div id="salary">
+            <label for="salaryInput">Monthly Salary:</label>
+            <input type="number" id="salaryInput" name="salaryInput" placeholder="$" required>
+        </div>
 
         <label for="category">Category:</label>
         <select id="category" name="category" required>
@@ -28,11 +29,16 @@
             <!-- Add more categories as needed -->
         </select>
 
+        <div id="otherCategoryDiv" style="display:none;">
+            <label for="otherCategory">Specify Category:</label>
+            <input type="text" id="otherCategory" name="otherCategory" placeholder="Enter category">
+        </div>
+
         <label for="amount">Amount:</label>
         <input type="number" id="amount" name="amount" placeholder="Enter amount" required>
 
         <label for="date">Date:</label>
-        <input type="date" min="1900-01-01" id="date" name="date" required>
+        <input type="date" min="2020-01-01" id="date" name="date" required>
 
         <button type="button" onclick="addExpense()">Add Expense</button>
     </form>
@@ -51,20 +57,23 @@
             <!-- Expense data will be displayed here -->
         </tbody>
     </table>
-        <div id="totalExpense">
-        <p>Total Expenses: $<span id="totalAmount">0</span></p> <p>Remaining Money: $<span id="remainingAmount">0.00</span></p>
+
+    <div id="totalExpense">
+        <p>Total Expenses: $<span id="totalAmount">0</span></p>
+        <p>Remaining Money: $<span id="remainingAmount">0.00</span></p>
     </div>
-    <button id="export" onclick="saveToFile()">Export all records</button>  <label for="fileInput" class="custom-file-input">Import File</label>
-  <!-- The actual file input is hidden -->
-  <input type="file" id="fileInput" />
-  
+
+    <button id="export" onclick="saveToFile()">Export all records</button>
+    <label for="fileInput" class="custom-file-input">Import File</label>
+    <input type="file" id="fileInput" />
+    
+    <h2>Expense Distribution</h2>
+    <canvas id="expenseChart"></canvas>
 </div>
 
-<script src="script.js">
-
-</script>
+<script src="script.js"></script>
 <div class="footer">
-    <p id="footertext">  Copyright © 2024 Teymur Babayev</p>
+    <p id="footertext">Copyright © 2024 Teymur Babayev</p>
 </div>
 </body>
 </html>

@@ -3,11 +3,10 @@ let salary = parseFloat(getCookie('salary')) || 0;
 document.getElementById('salaryInput').value = salary;
 const d = document.getElementById("date");
 
-//Max value for date is today
-
+// Max value for date is today
 var today = new Date();
 var dd = today.getDate();
-var mm = today.getMonth() + 1; //January is 0!
+var mm = today.getMonth() + 1; // January is 0!
 var yyyy = today.getFullYear();
 
 if (dd < 10) {
@@ -18,18 +17,30 @@ if (mm < 10) {
    mm = '0' + mm;
 } 
 today = yyyy + '-' + mm + '-' + dd;
-    d.setAttribute("max",today);
-    d.setAttribute('min',`2000-01-01`)
-    d.value = today;
+d.setAttribute("max", today);
+
+d.value = today;
+
+document.getElementById('category').addEventListener('change', function() {
+    const otherCategoryDiv = document.getElementById('otherCategoryDiv');
+    if (this.value === 'other') {
+        otherCategoryDiv.style.display = 'block';
+    } else {
+        otherCategoryDiv.style.display = 'none';
+        document.getElementById('otherCategory').value = '';
+    }
+});
 
 function addExpense() {
-    const category = document.getElementById('category').value;
+    let category = document.getElementById('category').value;
+    const otherCategory = document.getElementById('otherCategory').value;
     const amount = document.getElementById('amount').value;
     var date = document.getElementById('date').value;
-    if(date.split('-')[0] < 2000 || date.split('-')[0] >yyyy){
-      date = today;
-      console.log(1)
+
+    if (category === 'other' && otherCategory) {
+        category = otherCategory;
     }
+
     if (!category || !amount || !date) {
         alert('Please fill in all fields.');
         return;
@@ -52,10 +63,11 @@ function addExpense() {
     // Render expense history
     renderExpenseHistory();
 
-    // Clear input fields
- 
-    document.getElementById('amount').value = '';
+    // Update pie chart
+    updateChart();
 
+    // Clear input fields
+    document.getElementById('amount').value = '';
 }
 
 function updateSalary() {
@@ -64,8 +76,6 @@ function updateSalary() {
 
     // Update remaining money
     updateRemainingMoney();
-
-
 }
 
 function updateRemainingMoney() {
@@ -95,83 +105,86 @@ function renderExpenseHistory() {
         cell2.innerHTML = `$${expense.amount}`;
         cell3.innerHTML = expense.date;
 
-            // Add delete button
+        // Add delete button
         const deleteButton = document.createElement('i');
-
         deleteButton.className = 'fa fa-trash-o';
-        deleteButton.onclick = function () {
-        deleteExpense(expense);
+        deleteButton.onclick = function() {
+            deleteExpense(expense);
         };
-
-            cell4.appendChild(deleteButton);
+        cell4.appendChild(deleteButton);
     });
 
     // Update total expenses display
     document.getElementById('totalAmount').textContent = totalExpenses.toFixed(2);
+
+    // Update pie chart
+    updateChart();
 }
+
 function deleteExpense(expense) {
-  const expenseData = getCookie('expenseData') || '[]';
-  const expenses = JSON.parse(expenseData);
+    const expenseData = getCookie('expenseData') || '[]';
+    const expenses = JSON.parse(expenseData);
 
-  // Find and remove the expense
-  const index = expenses.findIndex(e => e.category === expense.category && e.amount === expense.amount && e.date === expense.date);
-  if (index !== -1) {
-      expenses.splice(index, 1);
-      setCookie('expenseData', JSON.stringify(expenses));
+    // Find and remove the expense
+    const index = expenses.findIndex(e => e.category === expense.category && e.amount === expense.amount && e.date === expense.date);
+    if (index !== -1) {
+        expenses.splice(index, 1);
+        setCookie('expenseData', JSON.stringify(expenses));
 
-      // Update total expenses and re-render
-      renderExpenseHistory();
-  }
-  updateRemainingMoney();
+        // Update total expenses and re-render
+        renderExpenseHistory();
+    }
+    updateRemainingMoney();
 }
 
-document.getElementById('salaryInput').addEventListener("input",updateSalary)
+document.getElementById('salaryInput').addEventListener("input", updateSalary);
 
-
-function setCookie(cname,cvalue) {
+function setCookie(cname, cvalue) {
     const d = new Date();
     d.setTime(d.getTime() + (999999999));
     let expires = "expires=" + d.toUTCString();
     document.cookie = cname + "=" + cvalue + ";" + expires + ";path=/";
-  }
-  
-  function getCookie(cname) {
+}
+
+function getCookie(cname) {
     let name = cname + "=";
     let decodedCookie = decodeURIComponent(document.cookie);
     let ca = decodedCookie.split(';');
-    for(let i = 0; i < ca.length; i++) {
-      let c = ca[i];
-      while (c.charAt(0) == ' ') {
-        c = c.substring(1);
-      }
-      if (c.indexOf(name) == 0) {
-        return c.substring(name.length, c.length);
-      }
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+        }
+        if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+        }
     }
     return "";
-  }
-  document.getElementById('fileInput').addEventListener('change', function(event) {
+}
+
+document.getElementById('fileInput').addEventListener('change', function(event) {
     const fileInput = event.target;
     const file = fileInput.files[0];
 
     if (file) {
-      readFile(file);
+        readFile(file);
     }
-  });
+});
 
-  function readFile(file) {
+function readFile(file) {
     const reader = new FileReader();
 
     reader.onload = function(e) {
-      const fileContent = e.target.result;
-      setCookie("expenseData",fileContent);
-      renderExpenseHistory();
-      updateRemainingMoney();
+        const fileContent = e.target.result;
+        setCookie("expenseData", fileContent);
+        renderExpenseHistory();
+        updateRemainingMoney();
     };
 
     reader.readAsText(file);
-  }
-  function saveToFile() {
+}
+
+function saveToFile() {
     const content = getCookie("expenseData");
 
     // Create a Blob with the content
@@ -194,6 +207,59 @@ function setCookie(cname,cvalue) {
 
     // Remove the link from the document
     document.body.removeChild(link);
-  }
-  renderExpenseHistory();
-  updateRemainingMoney();
+}
+
+const ctx = document.getElementById('expenseChart').getContext('2d');
+let expenseChart = new Chart(ctx, {
+    type: 'pie',
+    data: {
+        labels: [],
+        datasets: [{
+            label: 'Expenses',
+            data: [],
+            backgroundColor: [
+                'rgba(255, 99, 132, 0.2)',
+                'rgba(54, 162, 235, 0.2)',
+                'rgba(255, 206, 86, 0.2)',
+                'rgba(75, 192, 192, 0.2)',
+                'rgba(153, 102, 255, 0.2)',
+                'rgba(255, 159, 64, 0.2)'
+            ],
+            borderColor: [
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)'
+            ],
+            borderWidth: 1
+        }]
+    },
+    options: {
+        responsive: true
+    }
+});
+
+function updateChart() {
+    const expenseData = getCookie('expenseData') || '[]';
+    const expenses = JSON.parse(expenseData);
+
+    const categoryTotals = expenses.reduce((totals, expense) => {
+        if (!totals[expense.category]) {
+            totals[expense.category] = 0;
+        }
+        totals[expense.category] += parseFloat(expense.amount);
+        return totals;
+    }, {});
+
+    const labels = Object.keys(categoryTotals);
+    const data = Object.values(categoryTotals);
+
+    expenseChart.data.labels = labels;
+    expenseChart.data.datasets[0].data = data;
+    expenseChart.update();
+}
+
+renderExpenseHistory();
+updateRemainingMoney();
