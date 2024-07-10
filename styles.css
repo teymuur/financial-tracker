@@ -87,3 +87,8 @@ input[type="file"] {
   button:hover {
     background-color: #45a049;
   }
+
+  canvas{
+    max-height: 350px;
+    
+  }

@@ -66,9 +66,13 @@
     <button id="export" onclick="saveToFile()">Export all records</button>
     <label for="fileInput" class="custom-file-input">Import File</label>
     <input type="file" id="fileInput" />
+    <button id="resetButton" style="background-color:rgb(149, 9, 9)" onclick="confirmReset()">Reset All Data</button>
+
     
     <h2>Expense Distribution</h2>
     <canvas id="expenseChart"></canvas>
+    <h2>Weekly Expenses</h2>
+    <canvas id="weeklyChart"></canvas>
 </div>
 
 <script src="script.js"></script>

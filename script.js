@@ -18,7 +18,7 @@ if (mm < 10) {
 } 
 today = yyyy + '-' + mm + '-' + dd;
 d.setAttribute("max", today);
-
+d.setAttribute('min', '2000-01-01');
 d.value = today;
 
 document.getElementById('category').addEventListener('change', function() {
@@ -63,8 +63,8 @@ function addExpense() {
     // Render expense history
     renderExpenseHistory();
 
-    // Update pie chart
-    updateChart();
+    // Update charts
+    updateCharts();
 
     // Clear input fields
     document.getElementById('amount').value = '';
@@ -117,8 +117,8 @@ function renderExpenseHistory() {
     // Update total expenses display
     document.getElementById('totalAmount').textContent = totalExpenses.toFixed(2);
 
-    // Update pie chart
-    updateChart();
+    // Update charts
+    updateCharts();
 }
 
 function deleteExpense(expense) {
@@ -210,6 +210,7 @@ function saveToFile() {
 }
 
 const ctx = document.getElementById('expenseChart').getContext('2d');
+const ctxWeekly = document.getElementById('weeklyChart').getContext('2d');
 let expenseChart = new Chart(ctx, {
     type: 'pie',
     data: {
@@ -218,12 +219,20 @@ let expenseChart = new Chart(ctx, {
             label: 'Expenses',
             data: [],
             backgroundColor: [
-                'rgba(255, 99, 132, 0.2)',
-                'rgba(54, 162, 235, 0.2)',
-                'rgba(255, 206, 86, 0.2)',
-                'rgba(75, 192, 192, 0.2)',
-                'rgba(153, 102, 255, 0.2)',
-                'rgba(255, 159, 64, 0.2)'
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(255, 99, 132, 0.7)',
+                'rgba(54, 162, 235, 0.7)',
+                'rgba(255, 206, 86, 0.7)',
+                'rgba(75, 192, 192, 0.7)',
+                'rgba(153, 102, 255, 0.7)',
+                'rgba(255, 159, 64, 0.7)',
+                'rgba(75, 192, 192, 0.7)'
             ],
             borderColor: [
                 'rgba(255, 99, 132, 1)',
@@ -231,7 +240,15 @@ let expenseChart = new Chart(ctx, {
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
                 'rgba(153, 102, 255, 1)',
-                'rgba(255, 159, 64, 1)'
+                'rgba(255, 159, 64, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(255, 99, 132, 1)',
+                'rgba(54, 162, 235, 1)',
+                'rgba(255, 206, 86, 1)',
+                'rgba(75, 192, 192, 1)',
+                'rgba(153, 102, 255, 1)',
+                'rgba(255, 159, 64, 1)',
+                'rgba(75, 192, 192, 1)'
             ],
             borderWidth: 1
         }]
@@ -241,25 +258,111 @@ let expenseChart = new Chart(ctx, {
     }
 });
 
-function updateChart() {
-    const expenseData = getCookie('expenseData') || '[]';
-    const expenses = JSON.parse(expenseData);
+// Function to calculate the week number relative to the earliest date
+function getWeekNumber(date, startDate) {
+  const diff = (date - startDate) / (1000 * 60 * 60 * 24); // Difference in days
+  return Math.floor(diff / 7) + 1; // Convert to week number
+}
 
-    const categoryTotals = expenses.reduce((totals, expense) => {
-        if (!totals[expense.category]) {
-            totals[expense.category] = 0;
-        }
-        totals[expense.category] += parseFloat(expense.amount);
-        return totals;
-    }, {});
+let weeklyChart = new Chart(ctxWeekly, {
+  type: 'bar',
+  data: {
+      labels: [],
+      datasets: []
+  },
+  options: {
+      responsive: true,
+      scales: {
+          y: {
+              beginAtZero: true
+          }
+      }
+  }
+});
 
-    const labels = Object.keys(categoryTotals);
-    const data = Object.values(categoryTotals);
+function updateCharts() {
+  const expenseData = getCookie('expenseData') || '[]';
+  const expenses = JSON.parse(expenseData);
 
-    expenseChart.data.labels = labels;
-    expenseChart.data.datasets[0].data = data;
-    expenseChart.update();
+  // Update pie chart
+  const categoryTotals = expenses.reduce((totals, expense) => {
+      if (!totals[expense.category]) {
+          totals[expense.category] = 0;
+      }
+      totals[expense.category] += parseFloat(expense.amount);
+      return totals;
+  }, {});
+
+  const pieLabels = Object.keys(categoryTotals);
+  const pieData = Object.values(categoryTotals);
+
+  expenseChart.data.labels = pieLabels;
+  expenseChart.data.datasets[0].data = pieData;
+  expenseChart.update();
+
+  // Calculate the earliest date
+  const earliestDate = expenses.reduce((earliest, expense) => {
+      const expenseDate = new Date(expense.date);
+      return (earliest === null || expenseDate < earliest) ? expenseDate : earliest;
+  }, null);
+
+  // Update bar chart
+  const weeklyTotals = {};
+
+  expenses.forEach(expense => {
+      const date = new Date(expense.date);
+      const week = getWeekNumber(date, earliestDate);
+
+      if (!weeklyTotals[week]) {
+          weeklyTotals[week] = {};
+      }
+
+      if (!weeklyTotals[week][expense.category]) {
+          weeklyTotals[week][expense.category] = 0;
+      }
+
+      weeklyTotals[week][expense.category] += parseFloat(expense.amount);
+  });
+
+  const barLabels = Object.keys(weeklyTotals).map(week => `Week ${week}`);
+  const categoryColors = expenseChart.data.datasets[0].backgroundColor;
+  const datasets = pieLabels.map((category, index) => ({
+      label: category,
+      data: barLabels.map((label, weekIndex) => {
+          const week = weekIndex + 1;
+          return weeklyTotals[week] ? weeklyTotals[week][category] || 0 : 0;
+      }),
+      backgroundColor: categoryColors[index],
+      borderColor: categoryColors[index],
+      borderWidth: 1
+  }));
+
+  weeklyChart.data.labels = barLabels;
+  weeklyChart.data.datasets = datasets;
+  weeklyChart.update();
+}
+function confirmReset() {
+  if (confirm('Are you sure to reset all data? Make sure to export your data before resetting.')) {
+      resetAllData();
+  }
+}
+
+function resetAllData() {
+  // Clear all cookies
+  document.cookie = 'totalExpenses=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.cookie = 'salary=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+  document.cookie = 'expenseData=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+
+  // Reset UI elements
+  totalExpenses = 0;
+  salary = 0;
+  document.getElementById('salaryInput').value = '';
+  document.getElementById('totalAmount').textContent = '0.00';
+  document.getElementById('remainingAmount').textContent = '0.00';
+  renderExpenseHistory();
+  updateRemainingMoney();
 }
 
 renderExpenseHistory();
 updateRemainingMoney();
+updateCharts();
