@@ -219,7 +219,7 @@ let expenseChart = new Chart(ctx, {
             label: 'Expenses',
             data: [],
             backgroundColor: [
-                'rgba(255, 99, 132, 0.7)',
+                'rgba(150, 99, 132, 0.7)',
                 'rgba(54, 162, 235, 0.7)',
                 'rgba(255, 206, 86, 0.7)',
                 'rgba(75, 192, 192, 0.7)',
@@ -235,7 +235,7 @@ let expenseChart = new Chart(ctx, {
                 'rgba(75, 192, 192, 0.7)'
             ],
             borderColor: [
-                'rgba(255, 99, 132, 1)',
+                'rgba(150, 99, 132, 1)',
                 'rgba(54, 162, 235, 1)',
                 'rgba(255, 206, 86, 1)',
                 'rgba(75, 192, 192, 1)',
@@ -259,9 +259,9 @@ let expenseChart = new Chart(ctx, {
 });
 
 // Function to calculate the week number relative to the earliest date
-function getWeekNumber(date, startDate) {
-  const diff = (date - startDate) / (1000 * 60 * 60 * 24); // Difference in days
-  return Math.floor(diff / 7) + 1; // Convert to week number
+function getWeekNumber(date, start) {
+  const diff = (date - start + (start.getTimezoneOffset() - date.getTimezoneOffset()) * 60 * 1000) / 86400000;
+  return Math.floor((diff + start.getDay() + 1) / 7)+1;
 }
 
 let weeklyChart = new Chart(ctxWeekly, {
